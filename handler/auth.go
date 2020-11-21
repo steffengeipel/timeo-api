@@ -2,7 +2,8 @@ package handler
 
 import (
 	"time"
-	"timeo/config"
+
+	"github.com/steffengeipel/timeo-api/config"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"

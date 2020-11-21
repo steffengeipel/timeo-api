@@ -1,8 +1,8 @@
 package main
 
 import (
-	"timeo/config"
-	"timeo/router"
+	"github.com/steffengeipel/timeo-api/config"
+	"github.com/steffengeipel/timeo-api/router"
 
 	"github.com/gofiber/fiber/v2"
 )

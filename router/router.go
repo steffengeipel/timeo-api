@@ -1,8 +1,8 @@
 package router
 
 import (
-	"timeo/handler"
-	"timeo/middleware"
+	"github.com/steffengeipel/timeo-api/handler"
+	"github.com/steffengeipel/timeo-api/middleware"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
