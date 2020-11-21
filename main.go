@@ -1,15 +1,16 @@
 package main
 
 import (
+	"timeo/config"
+	"timeo/router"
+
 	"github.com/gofiber/fiber/v2"
-	"go-fiber-todos/router"
 )
 
-
 type ToDo struct {
-	Id	 				int	 			`json:"id"`
-	Name 				string		`json:"name"`
-	Completed		bool			`json:"completed"`
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Completed bool   `json:"completed"`
 }
 
 var todos = []ToDo{
@@ -18,16 +19,14 @@ var todos = []ToDo{
 }
 
 func main() {
-	
-  app := fiber.New()
+
+	app := fiber.New()
 
 	router.SetupRoutes(app)
-  app.Listen(":3000")
-		
+	app.Listen(config.Config("PORT"))
+
 }
 
-
-
-func GetToDos(ctx *fiber.Ctx){
+func GetToDos(ctx *fiber.Ctx) {
 	ctx.Status(fiber.StatusOK).JSON(todos)
 }

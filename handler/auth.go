@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"go-fiber-todos/config"
 	"time"
+	"timeo/config"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"

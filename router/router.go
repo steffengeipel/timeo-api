@@ -1,8 +1,8 @@
 package router
 
 import (
-	"go-fiber-todos/handler"
-	"go-fiber-todos/middleware"
+	"timeo/handler"
+	"timeo/middleware"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
