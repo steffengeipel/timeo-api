@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/steffengeipel/timeo-api/config"
-	"github.com/steffengeipel/timeo-api/router"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/steffengeipel/timeo-api/config"
+	"github.com/steffengeipel/timeo-api/database"
+	"github.com/steffengeipel/timeo-api/router"
 )
 
 type ToDo struct {
@@ -22,8 +22,12 @@ func main() {
 
 	app := fiber.New()
 
+	database.ConnectDB()
+
 	router.SetupRoutes(app)
 	app.Listen(config.Config("PORT"))
+
+	defer database.DB.Close()
 
 }
 

@@ -26,42 +26,42 @@ func Login(c *fiber.Ctx) error {
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Error on login request", "data": err})
 	}
-	// identity := input.Identity
-	// pass := input.Password
+	identity := input.Identity
+	pass := input.Password
 
-	// email, err := getUserByEmail(identity)
-	// if err != nil {
-	// 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Error on email", "data": err})
-	// }
+	email, err := getUserByEmail(identity)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Error on email", "data": err})
+	}
 
-	// user, err := getUserByUsername(identity)
-	// if err != nil {
-	// 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Error on username", "data": err})
-	// }
+	user, err := getUserByUsername(identity)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Error on username", "data": err})
+	}
 
-	// if email == nil && user == nil {
-	// 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "User not found", "data": err})
-	// }
+	if email == nil && user == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "User not found", "data": err})
+	}
 
-	// if email == nil {
-	// 	ud = UserData{
-	// 		ID:       user.ID,
-	// 		Username: user.Username,
-	// 		Email:    user.Email,
-	// 		Password: user.Password,
-	// 	}
-	// } else {
-	// 	ud = UserData{
-	// 		ID:       email.ID,
-	// 		Username: email.Username,
-	// 		Email:    email.Email,
-	// 		Password: email.Password,
-	// 	}
-	// }
+	if email == nil {
+		ud = UserData{
+			ID:       user.ID,
+			Username: user.Username,
+			Email:    user.Email,
+			Password: user.Password,
+		}
+	} else {
+		ud = UserData{
+			ID:       email.ID,
+			Username: email.Username,
+			Email:    email.Email,
+			Password: email.Password,
+		}
+	}
 
-	// if !CheckPasswordHash(pass, ud.Password) {
-	// 	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Invalid password", "data": nil})
-	// }
+	if !CheckPasswordHash(pass, ud.Password) {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Invalid password", "data": nil})
+	}
 
 	token := jwt.New(jwt.SigningMethodHS256)
 
