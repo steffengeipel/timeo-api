@@ -1,14 +1,50 @@
 package handler
 
 import (
+	"errors"
 	"time"
 
 	"github.com/steffengeipel/timeo-api/config"
+	"github.com/steffengeipel/timeo-api/database"
+	"github.com/steffengeipel/timeo-api/model"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 )
 
+// CheckPasswordHash compare password with hash
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
+
+func getUserByEmail(e string) (*model.User, error) {
+	db := database.DB
+	var user model.User
+	if err := db.Where(&model.User{Email: e}).Find(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
+func getUserByUsername(u string) (*model.User, error) {
+	db := database.DB
+	var user model.User
+	if err := db.Where(&model.User{Username: u}).Find(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
+// Login get user and password
 func Login(c *fiber.Ctx) error {
 	type LoginInput struct {
 		Identity string `json:"identity"`
