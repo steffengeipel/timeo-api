@@ -1,8 +1,8 @@
 package router
 
 import (
-	"github.com/steffengeipel/timeo-api/handler"
-	"github.com/steffengeipel/timeo-api/middleware"
+	"timeo-api/handler"
+	"timeo-api/router/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -19,11 +19,7 @@ func SetupRoutes(app *fiber.App) {
 	auth.Post("/login", handler.Login)
 
 	// User
-	user := api.Group("/user")
-	user.Get("/me", middleware.Protected(), handler.GetUser)
-	// user.Post("/", handler.CreateUser)
-	// user.Patch("/:id", middleware.Protected(), handler.UpdateUser)
-	// user.Delete("/:id", middleware.Protected(), handler.DeleteUser)
+	routes.SetupUserRoutes(api)
 
 	health := api.Group("/health")
 	health.Get("/api", handler.GetAPIHealth)

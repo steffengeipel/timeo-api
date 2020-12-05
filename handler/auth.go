@@ -4,9 +4,10 @@ import (
 	"errors"
 	"time"
 
-	"github.com/steffengeipel/timeo-api/config"
-	"github.com/steffengeipel/timeo-api/database"
-	"github.com/steffengeipel/timeo-api/model"
+	"timeo-api/config"
+	"timeo-api/database"
+	"timeo-api/model"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 
@@ -41,6 +42,7 @@ func getUserByUsername(u string) (*model.User, error) {
 		}
 		return nil, err
 	}
+
 	return &user, nil
 }
 
@@ -79,7 +81,7 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "User not found", "data": err})
 	}
 
-	if email == nil {
+	if email == nil || email.ID == 0 {
 		ud = UserData{
 			ID:       user.ID,
 			Username: user.Username,
@@ -96,6 +98,8 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	if !CheckPasswordHash(pass, ud.Password) {
+		println(pass)
+		println(ud.Password)
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "Invalid password", "data": nil})
 	}
 

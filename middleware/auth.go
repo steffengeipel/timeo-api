@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/steffengeipel/timeo-api/config"
+	"timeo-api/config"
 
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v2"

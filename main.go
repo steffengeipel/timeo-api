@@ -1,10 +1,11 @@
 package main
 
 import (
+	"timeo-api/config"
+	"timeo-api/database"
+	"timeo-api/router"
+
 	"github.com/gofiber/fiber/v2"
-	"github.com/steffengeipel/timeo-api/config"
-	"github.com/steffengeipel/timeo-api/database"
-	"github.com/steffengeipel/timeo-api/router"
 )
 
 func main() {

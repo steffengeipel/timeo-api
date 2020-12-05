@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// GetAPIHealth Check the Health from API
 func GetAPIHealth(c *fiber.Ctx) error {
 	t := struct {
 		test string

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/steffengeipel/timeo-api/config"
-	"github.com/steffengeipel/timeo-api/model"
+	"timeo-api/config"
+	"timeo-api/model"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
