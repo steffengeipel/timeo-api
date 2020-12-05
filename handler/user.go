@@ -2,11 +2,12 @@ package handler
 
 import (
 	"strconv"
+	"time"
 
 	"timeo-api/database"
 	"timeo-api/model"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/form3tech-oss/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -52,9 +53,17 @@ func validUser(id string, p string) bool {
 	return true
 }
 
-// GetMe get a user
-func GetMe(c *fiber.Ctx) error {
-	println("handler")
+// GetMyUserData get a user
+func GetMyUserData(c *fiber.Ctx) error {
+	type User struct {
+		ID        uint      `json: id`
+		Username  string    `json:"username"`
+		Email     string    `json:"email"`
+		CreatedAt time.Time `json:"createdAt"`
+		UpdatedAt time.Time `json:"updatedAt"`
+		Names     string    `json:"names"`
+	}
+
 	token := c.Locals("user").(*jwt.Token)
 	id := getMyID(token)
 	db := database.DB
@@ -63,7 +72,16 @@ func GetMe(c *fiber.Ctx) error {
 	if user.Username == "" {
 		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "No user found with ID", "data": nil})
 	}
-	return c.JSON(fiber.Map{"status": "success", "message": "Product found", "data": user})
+
+	returnUser := User{
+		ID:        user.ID,
+		Username:  user.Username,
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+		Names:     user.Names,
+	}
+	return c.JSON(fiber.Map{"status": "success", "message": "User found", "data": returnUser})
 }
 
 // CreateUser new user
