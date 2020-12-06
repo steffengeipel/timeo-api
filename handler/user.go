@@ -40,7 +40,7 @@ func getMyID(t *jwt.Token) int {
 	return uid
 }
 
-func validUser(id string, p string) bool {
+func validUser(id int, p string) bool {
 	db := database.DB
 	var user model.User
 	db.First(&user, id)
@@ -56,7 +56,7 @@ func validUser(id string, p string) bool {
 // GetMyUserData get a user
 func GetMyUserData(c *fiber.Ctx) error {
 	type User struct {
-		ID        uint      `json: id`
+		Id        uint      `json:"id"`
 		Username  string    `json:"username"`
 		Email     string    `json:"email"`
 		CreatedAt time.Time `json:"createdAt"`
@@ -74,7 +74,7 @@ func GetMyUserData(c *fiber.Ctx) error {
 	}
 
 	returnUser := User{
-		ID:        user.ID,
+		Id:        user.ID,
 		Username:  user.Username,
 		Email:     user.Email,
 		CreatedAt: user.CreatedAt,
@@ -101,7 +101,6 @@ func CreateUser(c *fiber.Ctx) error {
 	hash, err := hashPassword(user.Password)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't hash password", "data": err})
-
 	}
 
 	user.Password = hash
@@ -121,26 +120,51 @@ func CreateUser(c *fiber.Ctx) error {
 func UpdateUser(c *fiber.Ctx) error {
 	type UpdateUserInput struct {
 		Names string `json:"names"`
+		Email string `json:"email"`
 	}
+
+	type ReturnUser struct {
+		Id        uint      `json:"id"`
+		Username  string    `json:"username"`
+		Email     string    `json:"email"`
+		CreatedAt time.Time `json:"createdAt"`
+		UpdatedAt time.Time `json:"updatedAt"`
+		Names     string    `json:"names"`
+	}
+
 	var uui UpdateUserInput
 	if err := c.BodyParser(&uui); err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
-	id := c.Params("id")
-	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, id) {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Invalid token id", "data": nil})
+	token := c.Locals("user").(*jwt.Token)
+	id := getMyID(token)
+	db := database.DB
+
+	var user model.User
+	db.First(&user, id)
+
+	// Update User
+	if len(uui.Names) > 0 {
+		user.Names = uui.Names
 	}
 
-	db := database.DB
-	var user model.User
+	if len(uui.Email) > 0 {
+		user.Email = uui.Email
+	}
 
-	db.First(&user, id)
-	user.Names = uui.Names
 	db.Save(&user)
 
-	return c.JSON(fiber.Map{"status": "success", "message": "User successfully updated", "data": user})
+	updatedUser := ReturnUser{
+		Id:        user.ID,
+		Username:  user.Username,
+		Email:     user.Email,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+		Names:     user.Names,
+	}
+
+	return c.JSON(fiber.Map{"status": "success", "message": "User successfully updated", "data": updatedUser})
 }
 
 // DeleteUser delete user
@@ -152,17 +176,11 @@ func DeleteUser(c *fiber.Ctx) error {
 	if err := c.BodyParser(&pi); err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
-	id := c.Params("id")
+
 	token := c.Locals("user").(*jwt.Token)
-
-	if !validToken(token, id) {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Invalid token id", "data": nil})
-
-	}
-
+	id := getMyID(token)
 	if !validUser(id, pi.Password) {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Not valid user", "data": nil})
-
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Wrong password", "data": nil})
 	}
 
 	db := database.DB
