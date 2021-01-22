@@ -15,5 +15,5 @@ func main() {
 	database.ConnectDB()
 
 	router.SetupRoutes(app)
-	app.Listen(config.Config("PORT"))
+	panic(app.Listen(config.Config("PORT")))
 }

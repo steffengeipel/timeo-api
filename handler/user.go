@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"strconv"
 	"time"
 
 	"timeo-api/database"
@@ -17,7 +16,7 @@ func hashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-func validToken(t *jwt.Token, id string) bool {
+/*func validToken(t *jwt.Token, id string) bool {
 	n, err := strconv.Atoi(id)
 	if err != nil {
 		return false
@@ -31,7 +30,7 @@ func validToken(t *jwt.Token, id string) bool {
 	}
 
 	return true
-}
+}*/
 
 func getMyID(t *jwt.Token) int {
 	claims := t.Claims.(jwt.MapClaims)
