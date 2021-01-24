@@ -1,0 +1,21 @@
+version: '3.9'
+
+services: 
+  db: 
+    image: postgres
+    restart:  always
+    environment: 
+      POSTGRES_PASSWORD: example
+    ports: 
+      - 5432:5432
+  
+  pgadmin: 
+    image: dpage/pgadmin4
+    restart: always
+    environment: 
+      PGADMIN_DEFAULT_PASSWORD: example
+      PGADMIN_DEFAULT_EMAIL: email@example.de
+    ports: 
+      - 8080:80
+    links: 
+      - db:pqsql-server
