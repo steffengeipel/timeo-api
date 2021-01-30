@@ -53,7 +53,7 @@ func Login(c *fiber.Ctx) error {
 		Password string `json:"password"`
 	}
 	type UserData struct {
-		ID       uint   `json:"id"`
+		ID       string `json:"id"`
 		Username string `json:"username"`
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -81,7 +81,7 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "User not found", "data": err})
 	}
 
-	if email == nil || email.ID == 0 {
+	if email == nil || email.ID == "" {
 		ud = UserData{
 			ID:       user.ID,
 			Username: user.Username,

@@ -26,7 +26,10 @@ func ConnectDB() {
 	}
 
 	fmt.Println("Connection Opened to Database")
-	err = DB.AutoMigrate(&model.User{}, &model.Time{})
+
+	err = DB.SetupJoinTable(&model.User{}, "Projects", &model.ProjectMember{})
+
+	err = DB.AutoMigrate(&model.User{}, &model.Time{}, &model.Project{})
 	if err != nil {
 		fmt.Println(err)
 	}

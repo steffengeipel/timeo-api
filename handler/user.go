@@ -8,6 +8,7 @@ import (
 
 	"github.com/form3tech-oss/jwt-go"
 	"github.com/gofiber/fiber/v2"
+	"github.com/rs/xid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -32,14 +33,14 @@ func hashPassword(password string) (string, error) {
 	return true
 }*/
 
-func getMyID(t *jwt.Token) int {
+func getMyID(t *jwt.Token) string {
 	claims := t.Claims.(jwt.MapClaims)
-	uid := int(claims["user_id"].(float64))
+	uid := claims["user_id"].(string)
 
 	return uid
 }
 
-func validUser(id int, p string) bool {
+func validUser(id string, p string) bool {
 	db := database.DB
 	var user model.User
 	db.First(&user, id)
@@ -55,7 +56,7 @@ func validUser(id int, p string) bool {
 // GetMyUserData get a user
 func GetMyUserData(c *fiber.Ctx) error {
 	type User struct {
-		Id        uint      `json:"id"`
+		ID        string    `json:"id"`
 		Username  string    `json:"username"`
 		Email     string    `json:"email"`
 		CreatedAt time.Time `json:"createdAt"`
@@ -67,13 +68,13 @@ func GetMyUserData(c *fiber.Ctx) error {
 	id := getMyID(token)
 	db := database.DB
 	var user model.User
-	db.Find(&user, id)
+	db.Where("id = ?", id).Find(&user)
 	if user.Username == "" {
 		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "No user found with ID", "data": nil})
 	}
 
 	returnUser := User{
-		Id:        user.ID,
+		ID:        user.ID,
 		Username:  user.Username,
 		Email:     user.Email,
 		CreatedAt: user.CreatedAt,
@@ -103,6 +104,8 @@ func CreateUser(c *fiber.Ctx) error {
 	}
 
 	user.Password = hash
+	user.ID = xid.New().String()
+
 	if err := db.Create(&user).Error; err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "Couldn't create user", "data": err})
 	}
@@ -123,7 +126,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 
 	type ReturnUser struct {
-		Id        uint      `json:"id"`
+		ID        string    `json:"id"`
 		Username  string    `json:"username"`
 		Email     string    `json:"email"`
 		CreatedAt time.Time `json:"createdAt"`
@@ -155,7 +158,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	db.Save(&user)
 
 	updatedUser := ReturnUser{
-		Id:        user.ID,
+		ID:        user.ID,
 		Username:  user.Username,
 		Email:     user.Email,
 		CreatedAt: user.CreatedAt,

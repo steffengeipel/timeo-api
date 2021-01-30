@@ -19,6 +19,6 @@ Content-Type: application/json
 
 GET http://localhost:3001/api/user/me
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTE2MDc0ODAsInVzZXJfaWQiOjEsInVzZXJuYW1lIjoic3RnZWlwZWwifQ.y-MHoKZ9gUYLP9lK77z90yjVeIwJk5jLwwdSbCQ6was
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MTIzMDA1ODAsInVzZXJfaWQiOiJjMGFza21mNDByZmpwcTJtc21oMCIsInVzZXJuYW1lIjoic3RnZWlwZWwifQ.BZyQRS6DNh0IK8ufqIDk5iNycIGChrXxCzKuRNIELKk
 
 ###

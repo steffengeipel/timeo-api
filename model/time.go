@@ -10,7 +10,8 @@ import (
 type Time struct {
 	gorm.Model
 
-	UserID int       `json:"userId"`
+	ID     string    `gorm:"primaryKey;autoIncrement:false"`
+	UserID string    `json:"userId"`
 	Time   time.Time `json:"time"`
 	Status int       `json:"status"`
 }
